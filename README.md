@@ -54,6 +54,8 @@ The **Order Management System** provides an intuitive interface for handling ord
 
 **POST** `/api/orders/create`
 
+## First import database Json File in your local mongodb or create data menualy from application
+
 ```json
 {
   "customerName": "John Doe",
@@ -105,7 +107,7 @@ The **Order Management System** provides an intuitive interface for handling ord
 
 ```json
 {
-  "email": "john@example.com",
+  "email": "shahbaz@example.com",
   "password": "securepassword"
 }
 ```
