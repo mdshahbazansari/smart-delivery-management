@@ -1,14 +1,10 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextRequest, NextResponse } from 'next/server'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST' && req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method Not Allowed' })
-  }
-
-  const authHeader = req.headers.authorization
+export async function GET(req: NextRequest) {
+  const authHeader = req.headers.get('authorization')
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized' })
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
 
   const token = authHeader.split(' ')[1]
@@ -22,8 +18,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       email: string
     }
 
-    return res.status(200).json({ name: decoded.name, email: decoded.email })
+    return NextResponse.json(
+      { name: decoded.name, email: decoded.email },
+      { status: 200 }
+    )
   } catch (error) {
-    return res.status(401).json({ message: 'Invalid token' })
+    console.error(error)
+    return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
   }
 }
