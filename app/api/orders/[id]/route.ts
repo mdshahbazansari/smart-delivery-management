@@ -1,21 +1,23 @@
-import { connectDB } from '@/lib/db';
-import Order from '@/app/api/models/order';
-import { NextResponse } from 'next/server';
-import { NextRequest } from 'next/server';
+import { connectDB } from '@/lib/db'
+import Order from '@/app/api/models/order'
+import { NextResponse } from 'next/server'
 
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
-  await connectDB();
-  const data = await req.json();
+export async function PUT(req: Request, context: { params: { id: string } }) {
+  const { params } = context // Explicitly extract `params`
 
-  if (!context.params.id) {
-    return NextResponse.json({ error: 'Order ID is required' }, { status: 400 });
-  }
+  await connectDB()
+  console.log(params) // Debugging purpose
 
-  const order = await Order.findByIdAndUpdate(context.params.id, data, { new: true });
+  const data = await req.json()
+  const order = await Order.findByIdAndUpdate(params.id, data, { new: true })
 
   if (!order) {
-    return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+    return NextResponse.json({ error: 'Order not found' }, { status: 404 })
   }
 
-  return NextResponse.json({ message: 'Order Updated Successfully', order });
+  return NextResponse.json({ message: 'Order Updated Successfully', order })
+}
+
+export async function generateStaticParams() {
+  return [] // No static params (forces runtime resolution)
 }
